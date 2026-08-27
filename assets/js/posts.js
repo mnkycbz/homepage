@@ -86,4 +86,16 @@ window.POSTS = [
       <p>好啦，回去写作业了。</p>
     `,
   },
+  {
+    id: "advertising",
+    title: "复兴校园足球",
+    date: "2026-08-27",
+    tags: ["宣传", "随笔"],
+    excerpt: "我们普通高中生的校园足球联赛",
+    content: `
+      <h2>第一届 星海足球超级联赛 正式开启筹备</h2>
+<h3>详情请点击：<a href="https://xfsl-league.pages.dev" target="_blank" rel="noopener">https://xfsl-league.pages.dev</a></h3>
+<h3>星光灿烂，海纳百川！</h3>
+    `,
+  },
 ];
