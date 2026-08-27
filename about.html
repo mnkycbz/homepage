@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>document.documentElement.classList.add('js');</script>
+  <title>关于 · 猫你可以吃包子</title>
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+  <meta property="og:title" content="猫你可以吃包子" />
+  <meta property="og:description" content="苦命高中生的二次元小角落：写代码、追番、折腾各种小玩意儿。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/img/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="猫你可以吃包子" />
+  <meta name="twitter:description" content="苦命高中生的二次元小角落：写代码、追番、折腾各种小玩意儿。" />
+  <meta name="twitter:image" content="assets/img/og-image.png" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <div class="petals" id="petals" aria-hidden="true"></div>
+  <div class="progress" id="progress"></div>
+  <button class="to-top" id="toTop" aria-label="返回顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html"><span class="dot"></span> 猫你可以吃包子</a>
+      <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="blog.html">博客</a>
+        <a href="about.html">关于</a>
+        <button class="theme-btn" aria-label="切换主题"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section class="section">
+      <h2 class="section-title reveal">关于我</h2>
+      <div class="card about reveal">
+        <p>我是 <strong>猫你可以吃包子</strong>，一个在作业、考试和想发呆之间反复横跳的高中生。平时被学业追着跑，课余时间却总想捣鼓点什么——写写代码、追追新番、折腾各种莫名其妙的小玩意儿。这个站点就是我的小角落：既是树洞，也是作品集。</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title reveal">我的兴趣</h2>
+      <div class="card reveal">
+        <div class="tags">
+          <span class="tag">写代码</span>
+          <span class="tag">追番</span>
+          <span class="tag">折腾小玩意儿</span>
+          <span class="tag">二次元</span>
+          <span class="tag">Web 前端</span>
+        </div>
+        <p style="margin-top:14px">从简单的网页到各种各样的小工具，只要觉得「这个东西我自己做一个会很有意思」，就会忍不住动手。水平还在成长中，但乐在其中。</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title reveal">最近在忙</h2>
+      <div class="card reveal">
+        <ul class="now-list">
+          <li><span class="live"></span> 把这个小站从零搭起来，边学边改</li>
+          <li><span class="live"></span> 补一些经典老番，顺便囤新番</li>
+          <li><span class="live"></span> 摸索前端，想以后做个真正属于自己的项目</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title reveal">找到我</h2>
+      <div class="card reveal">
+        <p>欢迎来逛逛我的 <a href="https://space.bilibili.com/1562954158" target="_blank" rel="noopener" style="color:var(--primary);font-weight:600">B 站</a> 和 <a href="https://github.com/mnkycbz" target="_blank" rel="noopener" style="color:var(--primary);font-weight:600">GitHub</a>，或者发邮件到 <a href="mailto:3948023189@qq.com" style="color:var(--primary);font-weight:600">3948023189@qq.com</a>。能在这里遇见你，就很开心啦～</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">© <span id="year"></span> 猫你可以吃包子 · <a href="index.html">返回首页</a></div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 部署后把 YOUR-DOMAIN.example 替换为你的真实域名 -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://YOUR-DOMAIN.example/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://YOUR-DOMAIN.example/blog.html</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://YOUR-DOMAIN.example/about.html</loc><changefreq>monthly</changefreq></url>
+  <url><loc>https://YOUR-DOMAIN.example/post.html?id=site-launch</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/post.html?id=anime-skin</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/post.html?id=why-static</loc></url>
+  <url><loc>https://YOUR-DOMAIN.example/post.html?id=school-life</loc></url>
+</urlset>
