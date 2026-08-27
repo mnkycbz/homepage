@@ -285,6 +285,64 @@ a { color: inherit; text-decoration: none; }
 .now-list li { display: flex; align-items: center; gap: 10px; color: var(--text-soft); }
 .now-list li .live { flex-shrink: 0; }
 
+/* ---------- Interests wall ---------- */
+.interests { display: flex; flex-wrap: wrap; gap: 14px; }
+.interest {
+  display: inline-flex; align-items: center; gap: 11px;
+  padding: 14px 20px;
+  background: var(--surface);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: transform .35s var(--ease-bounce), box-shadow .35s ease, border-color .35s ease;
+}
+.interest:hover {
+  transform: translateY(-4px) scale(1.03);
+  border-color: rgba(255, 126, 182, 0.55);
+  box-shadow: 0 16px 38px rgba(177, 140, 255, 0.26);
+}
+.interest-emoji {
+  width: 42px; height: 42px; flex-shrink: 0;
+  display: grid; place-items: center;
+  font-size: 1.5rem;
+  border-radius: 13px;
+  background: linear-gradient(135deg, rgba(255, 126, 182, 0.2), rgba(177, 140, 255, 0.2));
+}
+.interest-name { font-family: var(--font-round); font-weight: 700; font-size: 1.02rem; color: var(--text); }
+
+/* ---------- Friend links ---------- */
+.links { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+.link-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 20px;
+  background: var(--surface);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  color: inherit; text-decoration: none;
+  transition: transform .35s var(--ease-bounce), box-shadow .35s ease, border-color .35s ease;
+}
+.link-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 126, 182, 0.55);
+  box-shadow: 0 18px 42px rgba(177, 140, 255, 0.26);
+}
+.link-icon {
+  width: 48px; height: 48px; flex-shrink: 0;
+  display: grid; place-items: center;
+  font-size: 1.6rem; border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255, 126, 182, 0.18), rgba(177, 140, 255, 0.18));
+}
+.link-body { flex: 1; min-width: 0; }
+.link-body h3 { font-family: var(--font-round); font-size: 1.08rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.link-body p { color: var(--text-soft); font-size: 0.88rem; line-height: 1.55; }
+.link-go { color: var(--primary); font-size: 1.3rem; font-weight: 700; flex-shrink: 0; transition: transform .35s var(--ease-bounce); }
+.link-card:hover .link-go { transform: translate(3px, -3px); }
+
 /* ---------- Post grid ---------- */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
 .post-card {
@@ -337,6 +395,17 @@ a { color: inherit; text-decoration: none; }
 .footer { border-top: 1px solid var(--border); padding: 32px 0; text-align: center; color: var(--text-soft); font-size: 0.88rem; }
 .footer a { color: var(--primary); font-weight: 600; }
 
+.site-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 16px; margin-bottom: 14px;
+  border: 1px solid var(--border); border-radius: 999px;
+  background: var(--surface); backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-sm);
+  font-size: 0.85rem; font-weight: 600; color: var(--text-soft);
+}
+.site-badge b { color: var(--primary); font-weight: 800; }
+
 .empty { text-align: center; color: var(--text-soft); padding: 50px 0; }
 
 /* ---------- Mobile ---------- */
@@ -368,6 +437,11 @@ a { color: inherit; text-decoration: none; }
   .section { padding: 34px 0; }
   .section-title { font-size: 1.2rem; margin-bottom: 18px; gap: 9px; }
   .card { padding: 20px; }
+  .interest { padding: 12px 16px; }
+  .interest-emoji { width: 38px; height: 38px; font-size: 1.3rem; }
+  .link-card { padding: 15px 16px; }
+  .link-icon { width: 42px; height: 42px; font-size: 1.4rem; }
+  .site-badge { font-size: 0.8rem; padding: 5px 14px; }
 
   .grid { grid-template-columns: 1fr; gap: 16px; }
   .post-card { padding: 20px; }

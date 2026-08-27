@@ -80,15 +80,56 @@
         <p>我是 <strong>猫你可以吃包子</strong>，一个在作业、考试和想发呆之间反复横跳的高中生。课余追追番、折腾各种小玩意儿，把这个小站当树洞和作品集。更多关于我和我的兴趣，戳 <a href="about.html" style="color:var(--primary);font-weight:600">关于页 →</a></p>
       </div>
     </section>
+
+    <section class="section">
+      <h2 class="section-title">我的兴趣</h2>
+      <div class="interests reveal">
+        <div class="interest"><span class="interest-emoji">⚽</span><span class="interest-name">足球</span></div>
+        <div class="interest"><span class="interest-emoji">🎮</span><span class="interest-name">原神</span></div>
+        <div class="interest"><span class="interest-emoji">🌸</span><span class="interest-name">二次元</span></div>
+        <div class="interest"><span class="interest-emoji">✍️</span><span class="interest-name">写作</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">友情链接</h2>
+      <div class="links">
+        <a class="link-card reveal" href="https://xfsl-league.pages.dev" target="_blank" rel="noopener">
+          <div class="link-icon">⚽</div>
+          <div class="link-body">
+            <h3>星海足球超级联赛</h3>
+            <p>我们普通高中生的校园五人制足球联赛官网</p>
+          </div>
+          <span class="link-go" aria-hidden="true">↗</span>
+        </a>
+        <a class="link-card reveal" href="https://de34304d615e48baa82f3e20e496a68d.app.workbuddy.link" target="_blank" rel="noopener">
+          <div class="link-icon">🔮</div>
+          <div class="link-body">
+            <h3>塔罗占卜 · 三牌阵</h3>
+            <p>输入问题，自选数字抽三张牌，看过去·现在·未来的指引</p>
+          </div>
+          <span class="link-go" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">
     <div class="container">
+      <div class="site-badge" id="siteBadge">🌸 建站第 <b>1</b> 天</div>
       © <span id="year"></span> 猫你可以吃包子 · 用一套零依赖静态前端搭建 · <a href="blog.html">博客</a>
     </div>
   </footer>
 
-  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    (function () {
+      var build = new Date(2026, 7, 27); // 建站日 2026-08-27；想改年份/月份/日期改这里即可
+      var days = Math.floor((Date.now() - build.getTime()) / 86400000) + 1;
+      var el = document.getElementById("siteBadge");
+      if (el) el.innerHTML = "🌸 建站第 <b>" + days + "</b> 天";
+    })();
+  </script>
   <script src="assets/js/posts.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
