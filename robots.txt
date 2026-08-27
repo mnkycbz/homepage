@@ -1,5 +1,4 @@
-# 部署上线后，把下面这行的 YOUR-DOMAIN.example 换成你的真实域名（例如 mnkycbz.com）
 User-agent: *
 Allow: /
 
-Sitemap: https://YOUR-DOMAIN.example/sitemap.xml
+Sitemap: https://mnkycbz.pages.dev/sitemap.xml
