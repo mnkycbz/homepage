@@ -11,7 +11,7 @@
      https://www.goatcounter.com , grab your code (the subdomain before
      .goatcounter.com), and put it in GOATCOUNTER_CODE below. Leave empty
      to load no third-party script at all. */
-  const GOATCOUNTER_CODE = "";
+  const GOATCOUNTER_CODE = "mnkycbz";
 
   /* ---------- Theme ---------- */
   const root = document.documentElement;
