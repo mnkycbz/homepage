@@ -79,24 +79,99 @@
     'style="vertical-align:-2px;margin-right:5px;opacity:.7"><rect x="3" y="5" width="18" height="16" rx="2"/>' +
     '<path d="M8 3v4M16 3v4M3 10h18"/></svg>';
 
-  /* ---------- Blog list ---------- */
+  /* ---------- Blog list (+ cover, tag filter, search) ---------- */
   const listEl = document.getElementById("post-list");
   if (listEl && window.POSTS) {
     const posts = window.POSTS.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
-    listEl.innerHTML = posts
-      .map(function (p) {
-        const tags = (p.tags || [])
-          .map(function (t) { return '<span class="tag">#' + esc(t) + "</span>"; })
+
+    /* cover emoji: posts.js 里可给某篇加 icon:"🎮" 覆盖；否则按标签推断 */
+    /* 越靠前优先级越高：具体标签优先于笼统的「随笔」，让相邻卡片 emoji 不重样 */
+    const TAG_EMOJI = {
+      "宣传": "📣", "足球": "⚽", "建站": "🛠️", "设计": "🎨",
+      "技术": "💻", "折腾": "🔧", "日常": "☕", "追番": "📺",
+      "游戏": "🎮", "学习": "📚", "碎碎念": "💭", "二次元": "🎐",
+      "生活": "🍵", "随笔": "🌸"
+    };
+    function coverEmoji(p) {
+      if (p.icon) return p.icon;
+      const t = p.tags || [];
+      const keys = Object.keys(TAG_EMOJI); // 按上面定义顺序匹配，具体标签优先于「随笔」
+      for (let i = 0; i < keys.length; i++) {
+        if (t.indexOf(keys[i]) >= 0) return TAG_EMOJI[keys[i]];
+      }
+      return "📝";
+    }
+    function cardHTML(p, i) {
+      const tags = (p.tags || [])
+        .map(function (t) { return '<span class="tag">#' + esc(t) + "</span>"; })
+        .join("");
+      return (
+        '<a class="post-card reveal" href="post.html?id=' + encodeURIComponent(p.id) + '">' +
+        '<div class="post-cover g' + (i % 3) + '">' + coverEmoji(p) + "</div>" +
+        "<h3>" + esc(p.title) + "</h3>" +
+        '<div class="excerpt">' + esc(p.excerpt || "") + "</div>" +
+        '<div class="post-meta"><span>' + calIcon + fmtDate(p.date) + "</span>" + tags + "</div>" +
+        "</a>"
+      );
+    }
+    function renderList(list) {
+      listEl.innerHTML = list.map(cardHTML).join("");
+      observeReveal(); // 新插入的卡片也要有滚动渐入
+    }
+    renderList(posts);
+
+    /* 标签筛选 + 搜索（只在含这些控件的页面启用，如 blog.html） */
+    const filterEl = document.getElementById("tagFilters");
+    const searchEl = document.getElementById("postSearch");
+    const emptyEl = document.getElementById("empty");
+    if (filterEl || searchEl) {
+      let activeTag = "全部";
+
+      if (filterEl) {
+        const seen = [];
+        posts.forEach(function (p) {
+          (p.tags || []).forEach(function (t) { if (seen.indexOf(t) < 0) seen.push(t); });
+        });
+        filterEl.innerHTML = ["全部"].concat(seen)
+          .map(function (t, i) {
+            return '<button class="filter' + (i === 0 ? " active" : "") + '" data-tag="' + esc(t) + '">' +
+              (i === 0 ? "全部" : "#" + esc(t)) + "</button>";
+          })
           .join("");
-        return (
-          '<a class="post-card reveal" href="post.html?id=' + encodeURIComponent(p.id) + '">' +
-          "<h3>" + esc(p.title) + "</h3>" +
-          '<div class="excerpt">' + esc(p.excerpt || "") + "</div>" +
-          '<div class="post-meta"><span>' + calIcon + fmtDate(p.date) + "</span>" + tags + "</div>" +
-          "</a>"
-        );
-      })
-      .join("");
+        filterEl.addEventListener("click", function (e) {
+          const b = e.target.closest(".filter");
+          if (!b) return;
+          activeTag = b.getAttribute("data-tag");
+          Array.prototype.forEach.call(filterEl.querySelectorAll(".filter"), function (x) {
+            x.classList.toggle("active", x === b);
+          });
+          applyFilters();
+        });
+      }
+      if (searchEl) searchEl.addEventListener("input", applyFilters);
+
+      function applyFilters() {
+        const q = (searchEl && searchEl.value ? searchEl.value : "").trim().toLowerCase();
+        const out = posts.filter(function (p) {
+          if (activeTag !== "全部" && (p.tags || []).indexOf(activeTag) < 0) return false;
+          if (!q) return true;
+          const plain = String(p.content || "").replace(/<[^>]+>/g, " "); // 去掉 HTML 标签再搜正文
+          const hay = (p.title + " " + (p.excerpt || "") + " " + (p.tags || []).join(" ") + " " + plain).toLowerCase();
+          return hay.indexOf(q) >= 0;
+        });
+        renderList(out);
+        if (emptyEl) {
+          if (!out.length) {
+            emptyEl.style.display = "";
+            emptyEl.innerHTML = q
+              ? '没有匹配「' + esc(q) + '」的文章，换个词试试？'
+              : "这个标签下还没有文章。";
+          } else {
+            emptyEl.style.display = "none";
+          }
+        }
+      }
+    }
   }
 
   /* ---------- Post detail ---------- */
@@ -168,17 +243,27 @@
   onScroll();
 
   /* ---------- Reveal on scroll ---------- */
-  const revealEls = document.querySelectorAll(".reveal");
-  if ("IntersectionObserver" in window && revealEls.length) {
+  /* 抽成函数：动态渲染的卡片（筛选/搜索后）也要重新观察 */
+  function observeReveal() {
+    const els = document.querySelectorAll(".reveal:not([data-observed])");
+    if (!("IntersectionObserver" in window)) {
+      Array.prototype.forEach.call(els, function (el) {
+        el.classList.add("in");
+        el.setAttribute("data-observed", "1");
+      });
+      return;
+    }
     const io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
       });
     }, { threshold: 0.12 });
-    revealEls.forEach(function (el) { io.observe(el); });
-  } else {
-    revealEls.forEach(function (el) { el.classList.add("in"); });
+    Array.prototype.forEach.call(els, function (el) {
+      el.setAttribute("data-observed", "1");
+      io.observe(el);
+    });
   }
+  observeReveal();
 
   /* ---------- Analytics (only if a code is set) ---------- */
   if (GOATCOUNTER_CODE) {

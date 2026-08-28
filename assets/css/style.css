@@ -374,6 +374,44 @@ a { color: inherit; text-decoration: none; }
   color: var(--primary); font-weight: 700; font-size: 0.78rem;
 }
 
+/* 文章卡封面：emoji + 渐变（按索引轮换三色，视觉更丰富） */
+.post-card { overflow: hidden; }
+.post-cover {
+  margin: -24px -24px 18px; padding: 26px 0;
+  border-radius: var(--radius) var(--radius) 0 0;
+  display: grid; place-items: center;
+  font-size: 2.7rem; line-height: 1;
+}
+.post-cover.g0 { background: linear-gradient(135deg, rgba(255, 126, 182, 0.3), rgba(177, 140, 255, 0.3)); }
+.post-cover.g1 { background: linear-gradient(135deg, rgba(177, 140, 255, 0.3), rgba(110, 195, 255, 0.3)); }
+.post-cover.g2 { background: linear-gradient(135deg, rgba(110, 195, 255, 0.3), rgba(255, 126, 182, 0.3)); }
+
+/* 博客工具条：搜索 + 标签筛选 */
+.blog-tools { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; margin-bottom: 26px; }
+.search-box {
+  display: flex; align-items: center; gap: 9px;
+  padding: 10px 17px;
+  border: 1px solid var(--border); border-radius: 999px;
+  background: var(--surface); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm); color: var(--text-soft);
+  flex: 1 1 240px; max-width: 340px;
+  transition: border-color .25s ease, box-shadow .25s ease;
+}
+.search-box:focus-within { border-color: rgba(255, 126, 182, 0.55); box-shadow: 0 10px 24px rgba(255, 126, 182, 0.2); }
+.search-box svg { flex-shrink: 0; opacity: .75; }
+.search-box input { border: 0; outline: 0; background: transparent; color: var(--text); font: inherit; font-size: 0.92rem; width: 100%; }
+.search-box input::placeholder { color: var(--text-soft); }
+.filters { display: flex; flex-wrap: wrap; gap: 9px; }
+.filter {
+  padding: 8px 16px; border: 1px solid var(--border); border-radius: 999px;
+  background: var(--surface); color: var(--text-soft);
+  font: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: color .2s ease, transform .3s var(--ease-bounce), box-shadow .25s ease, border-color .25s ease;
+}
+.filter:hover { color: var(--primary); border-color: rgba(255, 126, 182, 0.5); transform: translateY(-2px); }
+.filter.active { background: var(--grad); color: #fff; border-color: transparent; box-shadow: 0 8px 20px rgba(255, 126, 182, 0.32); }
+
 /* ---------- Post detail ---------- */
 .post-detail { padding: 40px 0 72px; }
 .post-detail h1 {
@@ -442,10 +480,13 @@ a { color: inherit; text-decoration: none; }
   .link-card { padding: 15px 16px; }
   .link-icon { width: 42px; height: 42px; font-size: 1.4rem; }
   .site-badge { font-size: 0.8rem; padding: 5px 14px; }
+  .blog-tools { flex-direction: column; align-items: stretch; gap: 12px; }
+  .search-box { max-width: none; }
 
   .grid { grid-template-columns: 1fr; gap: 16px; }
   .post-card { padding: 20px; }
   .post-card h3 { font-size: 1.1rem; }
+  .post-cover { margin: -20px -20px 16px; padding: 22px 0; font-size: 2.3rem; }
   .mascot { right: 2px; }
 
   .post-detail { padding: 26px 0 56px; }
