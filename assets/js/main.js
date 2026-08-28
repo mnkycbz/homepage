@@ -79,10 +79,22 @@
     'style="vertical-align:-2px;margin-right:5px;opacity:.7"><rect x="3" y="5" width="18" height="16" rx="2"/>' +
     '<path d="M8 3v4M16 3v4M3 10h18"/></svg>';
 
+  /* ---------- 数据加载：优先 fetch posts.json（Decap CMS 管理），失败回退 window.POSTS（本地预览） ---------- */
+  function withPosts(cb) {
+    if (!window.fetch) { cb(window.POSTS || []); return; }
+    fetch("assets/data/posts.json")
+      .then(function (r) { if (!r.ok) throw new Error("json missing"); return r.json(); })
+      .then(function (d) {
+        cb(Array.isArray(d.posts) ? d.posts : (Array.isArray(d) ? d : []));
+      })
+      .catch(function () { cb(window.POSTS || []); });
+  }
+
   /* ---------- Blog list (+ cover, tag filter, search) ---------- */
+  withPosts(function (all) {
   const listEl = document.getElementById("post-list");
-  if (listEl && window.POSTS) {
-    const posts = window.POSTS.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
+  if (listEl) {
+    const posts = all.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
 
     /* cover emoji: posts.js 里可给某篇加 icon:"🎮" 覆盖；否则按标签推断 */
     /* 越靠前优先级越高：具体标签优先于笼统的「随笔」，让相邻卡片 emoji 不重样 */
@@ -173,12 +185,14 @@
       }
     }
   }
+  });
 
   /* ---------- Post detail ---------- */
+  withPosts(function (all) {
   const detailEl = document.getElementById("post-detail");
-  if (detailEl && window.POSTS) {
+  if (detailEl) {
     const id = new URLSearchParams(location.search).get("id");
-    const post = window.POSTS.find(function (p) { return p.id === id; });
+    const post = all.find(function (p) { return p.id === id; });
     if (post) {
       const tags = (post.tags || [])
         .map(function (t) { return '<span class="tag">#' + esc(t) + "</span>"; })
@@ -216,6 +230,7 @@
       detailEl.innerHTML = '<p class="empty">没有找到这篇文章。<a href="blog.html">回到博客</a></p>';
     }
   }
+  });
 
   /* ---------- Active nav ---------- */
   const path = location.pathname.split("/").pop() || "index.html";

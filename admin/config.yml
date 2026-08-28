@@ -1,0 +1,36 @@
+# Decap CMS 配置
+# 后台入口：https://mnkycbz.pages.dev/admin
+# 登录：GitHub OAuth（由 Netlify 免费服务代理，需先在 Netlify 配置）
+
+backend:
+  name: github
+  repo: mnkycbz/homepage
+  branch: main
+  base_url: https://api.netlify.com/auth
+
+# 图片上传：会提交到仓库 assets/img/uploads，部署后自动上线
+media_folder: "assets/img/uploads"
+public_folder: "/assets/img/uploads"
+
+collections:
+  - name: posts
+    label: 文章
+    files:
+      - file: "assets/data/posts.json"
+        label: 文章列表
+        name: posts
+        fields:
+          - name: posts
+            label: 文章
+            widget: list
+            summary: "{{fields.title}}"
+            fields:
+              - { name: id, label: "编号 id", widget: string, hint: "英文小写、唯一，会出现在网址 post.html?id=xxx 里" }
+              - { name: title, label: 标题, widget: string }
+              - { name: date, label: 日期, widget: datetime, date_format: "YYYY-MM-DD", format: "YYYY-MM-DD" }
+              - name: tags
+                label: 标签
+                widget: list
+                field: { name: tag, label: 标签, widget: string }
+              - { name: excerpt, label: 摘要, widget: text }
+              - { name: content, label: "正文（HTML）", widget: text, hint: "用 <p>…</p> 包段落、<h2> 小标题、<strong> 加粗、<ul><li> 列表" }
