@@ -1,0 +1,58 @@
+/* ============================================================
+   内容管理后台 · 二次元主题（尽力覆盖版）
+   Decap 的 UI 类名是编译生成的（不稳定），这里只用能稳定的
+   通用选择器覆盖大块元素；文章预览的精细样式见 preview.css
+   ============================================================ */
+
+/* 全局背景：粉紫蓝渐变（与站点前端 body 一致） */
+body {
+  background:
+    radial-gradient(120% 80% at 0% 0%, #eaf4ff, transparent 55%),
+    radial-gradient(120% 90% at 100% 0%, #fff1f8, transparent 50%),
+    linear-gradient(160deg, #f3ecff, #fff1f8) !important;
+}
+
+/* 字体：圆体优先（贴合前端的可爱感） */
+body, button, input, textarea, select {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+}
+h1, h2, h3, h4 {
+  font-family: "Yuanti SC", "Hiragino Maru Gothic ProN", "Quicksand",
+    "PingFang SC", sans-serif;
+}
+
+/* 链接主色：樱花粉 */
+a { color: #ff7eb6; }
+a:hover { color: #b18cff; }
+
+/* 可命中的卡片/面板：更大圆角 + 柔和阴影 */
+[class*="Card"] { border-radius: 16px !important; }
+
+/* 主按钮：粉紫渐变（能命中的部分） */
+button[class*="Primary"], a[class*="Primary"] {
+  background: linear-gradient(135deg, #ff7eb6, #b18cff 52%, #6ec3ff) !important;
+  border: none !important;
+  border-radius: 999px !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+}
+button[class*="Primary"]:hover, a[class*="Primary"]:hover {
+  filter: brightness(1.08);
+}
+
+/* 选中态高亮：粉紫 */
+[class*="Selected"], [class*="active"] {
+  color: #ff7eb6 !important;
+}
+
+/* 表单控件：粉紫边框 + 圆角 */
+input, textarea, select {
+  border-radius: 10px !important;
+  border-color: #ffc9e0 !important;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: #ff7eb6 !important;
+  box-shadow: 0 0 0 3px rgba(255, 126, 182, 0.18) !important;
+  outline: none !important;
+}

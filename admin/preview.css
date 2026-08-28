@@ -1,0 +1,69 @@
+/* ============================================================
+   后台文章预览样式 —— 让预览窗格渲染成和站点前端一致
+   通过 registerPreviewStyle 加载（配合前端的 style.css）
+   ============================================================ */
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  color: #41304a;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  background: transparent;
+}
+
+/* 标题用圆体，主色渐变点缀 */
+h1, h2, h3 {
+  font-family: "Yuanti SC", "Hiragino Maru Gothic ProN", "Quicksand",
+    "PingFang SC", sans-serif;
+  line-height: 1.4;
+}
+h2 {
+  margin: 30px 0 12px;
+  font-size: 1.35rem;
+  padding-left: 10px;
+  border-left: 4px solid;
+  border-image: linear-gradient(135deg, #ff7eb6, #b18cff) 1;
+}
+h3 { margin: 22px 0 10px; font-size: 1.15rem; }
+
+p { margin: 14px 0; color: #55505c; }
+
+a { color: #ff7eb6; font-weight: 600; }
+
+strong { color: #41304a; }
+
+code {
+  background: #f3ecff;
+  padding: 2px 7px;
+  border-radius: 6px;
+  color: #b18cff;
+  font-size: 0.92em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+pre {
+  background: #f8f2ff;
+  padding: 14px 16px;
+  border-radius: 12px;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+pre code { background: none; padding: 0; color: #41304a; }
+
+ul, ol { margin: 14px 0 14px 22px; color: #55505c; }
+li { margin: 6px 0; }
+
+blockquote {
+  border-left: 4px solid #b18cff;
+  margin: 14px 0;
+  padding: 4px 0 4px 14px;
+  color: #8a7a92;
+}
+
+img { max-width: 100%; border-radius: 12px; }
+
+table { border-collapse: collapse; margin: 14px 0; }
+th, td { border: 1px solid #e6d9f2; padding: 8px 12px; }
+th { background: #f9f2ff; }
+
+hr { border: none; border-top: 2px dashed #ffc9e0; margin: 24px 0; }

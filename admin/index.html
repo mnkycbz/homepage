@@ -5,9 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex" />
   <title>内容管理 · 猫你可以吃包子</title>
+  <!-- 后台主题：粉紫蓝渐变（尽力覆盖 Decap UI） -->
+  <link rel="stylesheet" href="/admin/admin-theme.css" />
 </head>
 <body>
   <!-- Decap CMS 后台入口：访问 /admin 即可进入写作后台 -->
+  <script>
+    window.CMS_MANUAL_INIT = true;
+  </script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+    // 文章预览渲染成和站点前端一致的风格（前端样式 + 预览微调）
+    CMS.registerPreviewStyle("/assets/css/style.css");
+    CMS.registerPreviewStyle("/admin/preview.css");
+    CMS.init();
+  </script>
 </body>
 </html>

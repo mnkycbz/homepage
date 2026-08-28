@@ -202,7 +202,8 @@
         "<h1>" + esc(post.title) + "</h1>" +
         '<div class="post-meta"><span>' + calIcon + fmtDate(post.date) + "</span>" + tags +
         '<span class="read-time" id="readTime"></span></div>' +
-        '<div class="prose">' + post.content + "</div>";
+        // 正文：优先用 marked 渲染（支持 Markdown 写作）；加载失败则原样输出（旧 HTML 文章不受影响）
+        '<div class="prose">' + (window.marked ? window.marked.parse(post.content) : post.content) + "</div>";
       document.title = post.title + " · 猫你可以吃包子";
 
       // reading time + table of contents

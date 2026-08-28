@@ -35,4 +35,4 @@ collections:
                 widget: list
                 field: { name: tag, label: 标签, widget: string }
               - { name: excerpt, label: 摘要, widget: text }
-              - { name: content, label: "正文（HTML）", widget: text, hint: "用 <p>…</p> 包段落、<h2> 小标题、<strong> 加粗、<ul><li> 列表" }
+              - { name: content, label: "正文", widget: markdown, hint: "工具栏一键加粗/标题/列表/链接；也兼容直接写 HTML" }
