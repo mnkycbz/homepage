@@ -1,12 +1,14 @@
 # Decap CMS 配置
 # 后台入口：https://mnkycbz.pages.dev/admin
-# 登录：GitHub OAuth（由 Netlify 免费服务代理，需先在 Netlify 配置）
+# 登录：GitHub OAuth（由本站 functions/ 代理完成，无第三方）
 
 backend:
   name: github
   repo: mnkycbz/homepage
   branch: main
-  base_url: https://api.netlify.com/auth
+  base_url: https://mnkycbz.pages.dev
+  site_domain: mnkycbz.pages.dev
+  auth_endpoint: api/auth
 
 # 图片上传：会提交到仓库 assets/img/uploads，部署后自动上线
 media_folder: "assets/img/uploads"
