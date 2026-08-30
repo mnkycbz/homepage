@@ -289,4 +289,106 @@
     ga.setAttribute("data-goatcounter", "https://" + GOATCOUNTER_CODE + ".goatcounter.com/count");
     document.head.appendChild(ga);
   }
+
+  /* ============ v2.0 液态玻璃交互层 ============ */
+
+  /* 导航：滚动时底部折射边增强 */
+  (function () {
+    var nav = document.querySelector(".nav");
+    if (!nav) return;
+    window.addEventListener("scroll", function () {
+      nav.classList.toggle("scrolled", (window.scrollY || document.documentElement.scrollTop) > 8);
+    }, { passive: true });
+  })();
+
+  /* 导航玻璃：折射光斑跟随鼠标（js 更新 --shine-x） */
+  (function () {
+    var nav = document.querySelector(".nav");
+    var glass = nav ? nav.querySelector(".nav-glass") : null;
+    if (!nav || !glass) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    var shine = 50, target = 50, raf = null;
+    nav.addEventListener("mousemove", function (e) {
+      var r = nav.getBoundingClientRect();
+      target = ((e.clientX - r.left) / r.width) * 100;
+      if (!raf) raf = requestAnimationFrame(step);
+    });
+    nav.addEventListener("mouseleave", function () { target = 50; });
+    function step() {
+      shine += (target - shine) * 0.16;
+      glass.style.setProperty("--shine-x", shine.toFixed(1) + "%");
+      if (Math.abs(target - shine) > 0.4) { raf = requestAnimationFrame(step); }
+      else { raf = null; }
+    }
+  })();
+
+  /* 导航选中项：液态玻璃胶囊（悬停自动跟随 + 点击定 active） */
+  (function () {
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll(".nav-links a[data-nav]"));
+    var pill = document.querySelector(".nav-pill");
+    if (!pill || !navLinks.length) return;
+    function movePill(a) {
+      if (!a) return;
+      pill.style.width = a.offsetWidth + "px";
+      pill.style.transform = "translateX(" + a.offsetLeft + "px)";
+    }
+    movePill(document.querySelector(".nav-links a.active"));
+    navLinks.forEach(function (a) {
+      a.addEventListener("mouseenter", function () { movePill(a); });
+      a.addEventListener("click", function () {
+        navLinks.forEach(function (x) { x.classList.remove("active"); });
+        a.classList.add("active");
+        movePill(a);
+      });
+    });
+    window.addEventListener("resize", function () {
+      movePill(document.querySelector(".nav-links a.active"));
+    });
+  })();
+
+  /* 全局光斑跟随鼠标 */
+  (function () {
+    var glow = document.getElementById("glowFollow");
+    if (!glow || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    var x = window.innerWidth / 2, y = 220, tx = x, ty = y, raf = null;
+    window.addEventListener("mousemove", function (e) {
+      tx = e.clientX; ty = e.clientY;
+      if (!raf) raf = requestAnimationFrame(step);
+    }, { passive: true });
+    function step() {
+      x += (tx - x) * 0.08; y += (ty - y) * 0.08;
+      glow.style.transform = "translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px) translate(-50%,-50%)";
+      if (Math.abs(tx - x) > 0.5 || Math.abs(ty - y) > 0.5) { raf = requestAnimationFrame(step); }
+      else { raf = null; }
+    }
+  })();
+
+  /* 鼠标跟随光圈（经过头像自动让开） */
+  (function () {
+    var ring = document.getElementById("cursorRing");
+    if (!ring || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    var mx = window.innerWidth / 2, my = 220, rx = mx, ry = my, raf = null;
+    ring.style.opacity = 0;
+    window.addEventListener("mousemove", function (e) {
+      mx = e.clientX; my = e.clientY;
+      ring.style.opacity = 1;
+      if (!raf) raf = requestAnimationFrame(step);
+    }, { passive: true });
+    function step() {
+      rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16;
+      ring.style.transform = "translate(" + rx.toFixed(1) + "px," + ry.toFixed(1) + "px) translate(-50%,-50%)";
+      if (Math.abs(mx - rx) > 0.3 || Math.abs(my - ry) > 0.3) { raf = requestAnimationFrame(step); }
+      else { raf = null; }
+    }
+    document.addEventListener("mouseover", function (e) {
+      if (e.target.closest(".avatar-wrap")) { ring.classList.remove("grow"); ring.classList.add("hide"); return; }
+      if (e.target.closest("a, button, .interest, .post-card, .link-card, input")) ring.classList.add("grow");
+    });
+    document.addEventListener("mouseout", function (e) {
+      if (e.target.closest(".avatar-wrap")) { ring.classList.remove("hide"); return; }
+      if (e.target.closest("a, button, .interest, .post-card, .link-card, input")) ring.classList.remove("grow");
+    });
+    document.documentElement.addEventListener("mouseleave", function () { ring.style.opacity = 0; });
+    document.documentElement.addEventListener("mouseenter", function () { ring.style.opacity = 1; });
+  })();
 })();

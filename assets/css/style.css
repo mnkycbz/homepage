@@ -581,3 +581,249 @@ a { color: inherit; text-decoration: none; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
   .progress, .to-top { display: none; }
 }
+
+/* ============================================================
+   v2.0 液态玻璃 + emil 动效 + Apple 材质（覆盖层，追加在末尾）
+   - 自定义缓动曲线 / 材质变量
+   - iOS26 液态玻璃导航（常驻磨砂 + 高光边 + 内部光 + 选中胶囊悬停跟随）
+   - 全局光斑跟随鼠标 + 鼠标光圈
+   - 卡片/按钮 hover 光扫 / 按压反馈 / 入场 materialize+stagger
+   ============================================================ */
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-press: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --glass: rgba(255, 255, 255, 0.42);
+  --glass-strong: rgba(255, 255, 255, 0.6);
+  --edge-light: rgba(255, 255, 255, 0.72);
+  --border-soft: rgba(255, 140, 200, 0.14);
+  --shadow-soft: 0 1px 3px rgba(177, 140, 255, 0.08), 0 10px 28px rgba(177, 140, 255, 0.12);
+  --shadow-hover: 0 3px 8px rgba(255, 126, 182, 0.10), 0 20px 44px rgba(177, 140, 255, 0.20);
+}
+[data-theme="dark"] {
+  --glass: rgba(45, 34, 62, 0.4); --glass-strong: rgba(60, 46, 82, 0.6);
+  --edge-light: rgba(255, 255, 255, 0.08);
+  --border-soft: rgba(255, 158, 199, 0.16);
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.35);
+  --shadow-hover: 0 3px 8px rgba(0, 0, 0, 0.35), 0 20px 44px rgba(177, 140, 255, 0.18);
+}
+
+/* ---------- 导航：iOS26 液态玻璃（材质常驻） ---------- */
+.nav {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.34));
+  backdrop-filter: blur(34px) saturate(190%);
+  -webkit-backdrop-filter: blur(34px) saturate(190%);
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 10px 28px rgba(177, 140, 255, 0.10);
+}
+[data-theme="dark"] .nav {
+  background: linear-gradient(180deg, rgba(45, 34, 62, 0.55), rgba(45, 34, 62, 0.38));
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+/* 顶部高光边（常驻） */
+.nav::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1.5px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 1), transparent);
+}
+[data-theme="dark"] .nav::before { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent); }
+/* 底部折射边（内容滚过时增强） */
+.nav::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -16px; height: 16px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.30), transparent);
+  opacity: 0.6; transition: opacity 300ms var(--ease-out); pointer-events: none;
+}
+[data-theme="dark"] .nav::after { background: linear-gradient(to bottom, rgba(60, 46, 82, 0.5), transparent); }
+.nav.scrolled::after { opacity: 1; }
+/* 玻璃内部光线：持续流动 + 折射光斑跟随鼠标 */
+.nav-glass { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.nav-glass::before {
+  content: ""; position: absolute; top: -30%; bottom: -30%; left: 0; width: 58%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  filter: blur(8px);
+  transform: translateX(-90%);
+  will-change: transform;
+  animation: navShimmer 6s linear infinite;
+  opacity: 1;
+}
+[data-theme="dark"] .nav-glass::before { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent); }
+@keyframes navShimmer {
+  0% { transform: translateX(-90%); }
+  100% { transform: translateX(340%); }
+}
+.nav-glass::after {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(170px circle at var(--shine-x, 50%) 50%, rgba(255, 255, 255, 0.45), transparent 70%);
+  opacity: 0.5; transition: opacity 300ms var(--ease-out);
+}
+[data-theme="dark"] .nav-glass::after { background: radial-gradient(170px circle at var(--shine-x, 50%) 50%, rgba(255, 255, 255, 0.14), transparent 70%); }
+@media (hover: hover) and (pointer: fine) { .nav:hover .nav-glass::after { opacity: 0.75; } }
+
+/* ---------- 导航选项：液态玻璃胶囊（悬停自动跟随） ---------- */
+.nav-links { position: relative; }
+.nav-links a { position: relative; z-index: 1; transition: color 220ms var(--ease-out); }
+.nav-links a:hover { color: var(--text); background: none; }
+.nav-links a.active { color: var(--primary); font-weight: 700; }
+.nav-links a.active::after { display: none; }
+.nav-pill {
+  position: absolute; top: 2px; bottom: 2px; left: 0; width: 40px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.62));
+  backdrop-filter: blur(18px) saturate(190%);
+  -webkit-backdrop-filter: blur(18px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), 0 6px 18px rgba(177, 140, 255, 0.22);
+  transition: transform 340ms var(--ease-spring), width 340ms var(--ease-spring);
+  pointer-events: none; z-index: 0;
+}
+[data-theme="dark"] .nav-pill {
+  background: linear-gradient(180deg, rgba(90, 74, 120, 0.9), rgba(70, 56, 96, 0.65));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+.nav-pill::before {
+  content: ""; position: absolute; left: 6px; right: 6px; top: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 1), transparent);
+  border-radius: 999px;
+}
+.nav-pill::after {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(80px circle at 30% 30%, rgba(255, 255, 255, 0.5), transparent 70%);
+  border-radius: 999px; opacity: 0.6;
+}
+[data-theme="dark"] .nav-pill::before { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent); }
+[data-theme="dark"] .nav-pill::after { background: radial-gradient(80px circle at 30% 30%, rgba(255, 255, 255, 0.12), transparent 70%); }
+
+/* ---------- 材质层：更玻璃（覆盖原卡片） ---------- */
+.card, .post-card, .link-card, .interest {
+  background: var(--glass);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid var(--border-soft);
+  border-top: 1px solid var(--edge-light);
+  box-shadow: var(--shadow-soft);
+}
+.status, .theme-btn, .site-badge, .back-top {
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: var(--glass);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+}
+.socials a { background: var(--glass-strong); }
+.post-card {
+  transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out), border-color 220ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .post-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: rgba(255, 126, 182, 0.4); }
+  .socials a:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+  .interest:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+  .link-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+}
+
+/* ---------- 按压反馈（emil: :active scale 0.97） ---------- */
+.theme-btn, .socials a, .filter, .back-top, .nav-links a, .link-card, .interest, .post-card {
+  transition: transform 100ms var(--ease-press), box-shadow 220ms var(--ease-out),
+    color 200ms var(--ease-out), border-color 200ms var(--ease-out), background 200ms var(--ease-out);
+}
+.theme-btn:active, .socials a:active, .filter:active, .back-top:active,
+.nav-links a:active, .link-card:active, .interest:active, .post-card:active { transform: scale(0.97); }
+
+/* ---------- 卡片 hover 光扫（液态玻璃反光） ---------- */
+.post-card, .link-card, .interest { position: relative; }
+.post-card::after, .link-card::after, .interest::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 45%; left: 0;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+  transform: translateX(-160%) skewX(-18deg);
+  opacity: 0; transition: opacity 300ms var(--ease-out);
+  pointer-events: none; border-radius: inherit;
+}
+[data-theme="dark"] .post-card::after, [data-theme="dark"] .link-card::after, [data-theme="dark"] .interest::after {
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .post-card:hover::after, .link-card:hover::after, .interest:hover::after {
+    opacity: 1; animation: cardShine 900ms var(--ease-out) forwards;
+  }
+}
+@keyframes cardShine { to { transform: translateX(320%) skewX(-18deg); } }
+
+/* ---------- 社交按钮 hover 光扫 ---------- */
+.socials a { position: relative; overflow: hidden; }
+.socials a::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 35%; left: 0;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: translateX(-150%) skewX(-20deg);
+  opacity: 0; pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .socials a:hover::after { animation: btnShine 650ms var(--ease-out) forwards; }
+}
+@keyframes btnShine { to { transform: translateX(320%) skewX(-20deg); } }
+
+/* ---------- 全局光斑跟随鼠标 ---------- */
+.glow-follow {
+  position: fixed; top: 0; left: 0; width: 360px; height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 182, 220, 0.15), rgba(255, 182, 220, 0) 65%);
+  pointer-events: none; z-index: -1;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+[data-theme="dark"] .glow-follow { background: radial-gradient(circle, rgba(255, 158, 199, 0.09), rgba(255, 158, 199, 0) 65%); }
+
+/* ---------- 鼠标跟随光圈 ---------- */
+.cursor-ring {
+  position: fixed; top: 0; left: 0; width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 126, 182, 0.4);
+  box-shadow: 0 0 12px rgba(255, 126, 182, 0.22), inset 0 0 8px rgba(255, 126, 182, 0.08);
+  background: transparent;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+  transition: width 0.3s var(--ease-out), height 0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), opacity 0.4s var(--ease-out);
+}
+.cursor-ring.grow { width: 44px; height: 44px; border-color: rgba(255, 126, 182, 0.6); box-shadow: 0 0 18px rgba(255, 126, 182, 0.3), inset 0 0 10px rgba(255, 126, 182, 0.12); }
+.cursor-ring.hide { opacity: 0; }
+[data-theme="dark"] .cursor-ring { border-color: rgba(255, 158, 199, 0.35); box-shadow: 0 0 12px rgba(255, 158, 199, 0.18), inset 0 0 8px rgba(255, 158, 199, 0.06); }
+[data-theme="dark"] .cursor-ring.grow { border-color: rgba(255, 158, 199, 0.55); box-shadow: 0 0 18px rgba(255, 158, 199, 0.26), inset 0 0 10px rgba(255, 158, 199, 0.1); }
+
+/* ---------- 入场：materialize（blur+scale+opacity）+ stagger ---------- */
+.reveal {
+  opacity: 0; transform: translateY(14px) scale(0.985);
+  filter: blur(3px);
+  transition: opacity 480ms var(--ease-out), transform 480ms var(--ease-out), filter 480ms var(--ease-out);
+}
+.reveal.in { opacity: 1; transform: none; filter: blur(0); }
+.grid .post-card.reveal:nth-child(1) { transition-delay: 40ms; }
+.grid .post-card.reveal:nth-child(2) { transition-delay: 100ms; }
+.grid .post-card.reveal:nth-child(3) { transition-delay: 160ms; }
+.grid .post-card.reveal:nth-child(4) { transition-delay: 220ms; }
+.grid .post-card.reveal:nth-child(5) { transition-delay: 280ms; }
+
+/* ---------- 排版：大字负字距 ---------- */
+.hero h1, .post-detail h1 { letter-spacing: -0.02em; line-height: 1.1; font-optical-sizing: auto; }
+.section-title, .post-card h3, .link-body h3 { letter-spacing: -0.01em; }
+
+/* ---------- Apple 三重无障碍响应 ---------- */
+@media (prefers-reduced-transparency: reduce) {
+  .nav, .card, .post-card, .link-card, .interest, .status, .socials a, .theme-btn, .site-badge, .back-top {
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    background: var(--glass-strong);
+  }
+}
+@media (prefers-contrast: more) {
+  .card, .post-card, .link-card, .interest, .status, .socials a, .theme-btn {
+    border-color: rgba(65, 48, 74, 0.4);
+  }
+  [data-theme="dark"] .card, [data-theme="dark"] .post-card, [data-theme="dark"] .link-card,
+  [data-theme="dark"] .interest { border-color: rgba(243, 233, 247, 0.4); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glow-follow, .cursor-ring { display: none; }
+  .post-card::after, .link-card::after, .interest::after, .socials a::after, .nav-glass::before { display: none; }
+  .reveal { opacity: 1; transform: none; filter: none; transition: none; }
+}
